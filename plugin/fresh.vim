@@ -13,9 +13,18 @@ function! SendRefreshRequest()
     redraw!
 endfunction
 
-"Create an autocmd group
-aug RefreshGroup
-    "Clear the RefreshGroup augroup. Otherwise Vim will combine them.
-    au!
-    au BufWritePost * call SendRefreshRequest()
-aug END
+function StopSendingRefreshRequests()
+    "Clear out the autocmds
+    au! RefreshGroup BufWritePost
+endfunction!
+
+function StartSendingRefreshRequests()
+    "Create an autocmd group
+    aug RefreshGroup
+        "Clear the RefreshGroup augroup. Otherwise Vim will combine them.
+        au!
+        au BufWritePost * call SendRefreshRequest()
+    aug END
+endfunction!
+
+call StartSendingRefreshRequests()
