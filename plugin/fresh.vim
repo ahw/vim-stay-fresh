@@ -7,11 +7,15 @@ function! SendRefreshRequest()
     "come in handy. We're also not bothing with anything other than the
     "BufWritePost event, but it's nice to keep in general for now in case we
     "want start listening for other events in the future.
-    let curlRequest = '"http://localhost:7700/reload?filename=' . vimEscapedFileName . '"'
+    let curlRequest = '"http://localhost:7700/reload?delay=' . s:requestDelayMillis . '&filename=' . vimEscapedFileName . '"'
     execute 'silent !curl ' . curlRequest
     "Clear and redraw the screen
     redraw!
 endfunction
+
+function SetDelayTimeMillis(millis)
+    let s:requestDelayMillis = a:millis
+endfunction!
 
 function StopSendingRefreshRequests()
     "Clear out the autocmds
@@ -19,6 +23,9 @@ function StopSendingRefreshRequests()
 endfunction!
 
 function StartSendingRefreshRequests()
+    "Set the delay time to 2 seconds
+    call SetDelayTimeMillis(2000)
+
     "Create an autocmd group
     aug RefreshGroup
         "Clear the RefreshGroup augroup. Otherwise Vim will combine them.
