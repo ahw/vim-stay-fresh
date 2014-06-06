@@ -24,7 +24,7 @@ endfunction!
 
 function StartSendingRefreshRequests()
     "Set the delay time to 2 seconds
-    call SetDelayTimeMillis(2000)
+    call SetDelayTimeMillis(200)
 
     "Create an autocmd group
     aug RefreshGroup
@@ -35,3 +35,4 @@ function StartSendingRefreshRequests()
 endfunction!
 
 call StartSendingRefreshRequests()
+map <leader>r <esc>:call SendRefreshRequest()<cr>
