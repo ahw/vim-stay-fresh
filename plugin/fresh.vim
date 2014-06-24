@@ -1,6 +1,6 @@
 function! SendRefreshRequest()
-    let fileName = getreg('%')
-    let urlEncodedFileName = substitute(fileName, '/', '%2F', 'g')
+    let filename = getreg('%')
+    let urlEncodedFileName = s:urlEncode(filename)
     let vimEscapedFileName = substitute(urlEncodedFileName, '%', '\\%', 'g')
     "Make request to the server with the event name and the filename. Not
     "really using the filename at this point, but in the future it might
@@ -13,16 +13,22 @@ function! SendRefreshRequest()
     redraw!
 endfunction
 
-function SetDelayTimeMillis(millis)
-    let s:requestDelayMillis = a:millis
-endfunction!
+" Credit goes to
+" https://github.com/tpope/vim-unimpaired/blob/master/plugin/unimpaired.vim#L298
+function! s:urlEncode(str)
+    return substitute(a:str,'[^A-Za-z0-9_.~-]','\="%".printf("%02X",char2nr(submatch(0)))','g')
+endfunction
 
-function StopSendingRefreshRequests()
+function! SetDelayTimeMillis(millis)
+    let s:requestDelayMillis = a:millis
+endfunction
+
+function! StopSendingRefreshRequests()
     "Clear out the autocmds
     au! RefreshGroup BufWritePost
-endfunction!
+endfunction
 
-function StartSendingRefreshRequests()
+function! StartSendingRefreshRequests()
     "Set the delay time to 2 seconds
     call SetDelayTimeMillis(200)
 
@@ -32,7 +38,7 @@ function StartSendingRefreshRequests()
         au!
         au BufWritePost * call SendRefreshRequest()
     aug END
-endfunction!
+endfunction
 
 call StartSendingRefreshRequests()
 map <leader>r <esc>:call SendRefreshRequest()<cr>
