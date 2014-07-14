@@ -42,3 +42,8 @@ endfunction
 
 call StartSendingRefreshRequests()
 map <leader>r <esc>:call SendRefreshRequest()<cr>
+
+" Define commands
+command! -nargs=1 SetDelayTimeMillis call SetDelayTimeMillis(<f-args>)
+command! -nargs=0 StartRefreshing call StartSendingRefreshRequests()
+command! -nargs=0 StopRefreshing call StopSendingRefreshRequests()
